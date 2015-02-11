@@ -1,6 +1,14 @@
-# Uncharted-describe-models
+# UnchartedCode describe-models
 
-This README outlines the details of collaborating on this Ember addon.
+Generating ember-data schema from a backend definition. Meant to be used with the ember-schema gem.
+
+## Installation
+
+```
+ember install:addon ember-cli-uncharted-describe-models
+```
+
+# Development
 
 ## Installation
 
