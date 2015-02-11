@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-uncharted-describe-models",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generating ember-data schema from a backend definition. Meant to be used with the ember-schema gem.",
   "directories": {
     "doc": "doc",
