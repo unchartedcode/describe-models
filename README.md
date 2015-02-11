@@ -1,4 +1,4 @@
-# UnchartedCode describe-models [![Build Status][travis-badge]][travis-badge-url]
+# UnchartedCode Describe Models [![Build Status][travis-badge]][travis-badge-url]
 
 Generating ember-data schema from a backend definition. Meant to be used with the ember-schema gem.
 
