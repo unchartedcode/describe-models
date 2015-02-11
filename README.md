@@ -31,3 +31,6 @@ ember install:addon ember-cli-uncharted-describe-models
 * `ember build`
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+
+[travis-badge]: https://travis-ci.org/unchartedcode/describe-models.svg?branch=master
+[travis-badge-url]: https://travis-ci.org/unchartedcode/describe-models
