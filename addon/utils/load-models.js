@@ -70,12 +70,14 @@ var defineModel = function(className, schema, model, container, application) {
     }
   }
 
-  application.register("model:" + (Ember.String.dasherize(className)), model.extend(properties));
+  var extended = model.extend(properties);
+  application.register("model:" + (Ember.String.dasherize(className)), extended);
+
   if (schema.descendants) {
     schemaDescendants = schema.descendants;
     for (subClassName in schemaDescendants) {
       subSchema = schemaDescendants[subClassName];
-      defineModel(subClassName, subSchema, container.lookup("model:" + className));
+      defineModel(subClassName, subSchema, extended, container, application);
     }
   }
 };
