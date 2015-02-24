@@ -1,20 +1,13 @@
-import UnchartedAjax from 'uncharted-ajax';
-import DS from 'ember-data';
-import LoadModels from 'uncharted-describe-models/utils/load-models';
+import { loadModels } from 'uncharted-describe-models/utils/load-models';
+import config from '../config/environment'
+import { load as loadDefinitions } from '../utils/model-definitions'
 
 export function initialize(container, application) {
-  application.deferReadiness();
-
-  UnchartedAjax({
-    url: '/api/describe/models',
-  }).then(function(result) {
-    LoadModels(result, container, application);
-  }).finally(function() {
-    application.advanceReadiness();
-  })
+  loadDefinitions(loadModels(config['model-schema']));
 }
 
 export default {
   name: 'uncharted-schema',
+  before: 'ember-data',
   initialize: initialize
 };

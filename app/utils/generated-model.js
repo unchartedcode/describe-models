@@ -1,13 +1,5 @@
-import config from '../config/environment';
+import ModelDefinitions from '../utils/model-definitions'
 
 export default function generatedModel(name) {
-  var classifiedName = Ember.String.classify(config.modulePrefix);
-  if (window[classifiedName] &&
-     window[classifiedName].__container__ &&
-     window[classifiedName].__container__.registry &&
-     window[classifiedName].__container__.registry["model:"+name]) {
-    return window[classifiedName].__container__.registry["model:"+name] || DS.Model;
-  } else {
-    return DS.Model;
-  }
+  return ModelDefinitions[name];
 }

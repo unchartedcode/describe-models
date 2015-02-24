@@ -20,7 +20,7 @@ var dsTypes = {
   array:              'array'
 };
 
-var defineModel = function(className, schema, model, container, application) {
+var loadModel = function(className, schema, model, config) {
   var assoc;
   var attr;
   var info;
@@ -70,24 +70,28 @@ var defineModel = function(className, schema, model, container, application) {
     }
   }
 
-  var extended = model.extend(properties);
-  application.register("model:" + (Ember.String.dasherize(className)), extended);
+  config[Ember.String.dasherize(className)] = model.extend(properties);
 
   if (schema.descendants) {
     schemaDescendants = schema.descendants;
     for (subClassName in schemaDescendants) {
       subSchema = schemaDescendants[subClassName];
-      defineModel(subClassName, subSchema, extended, container, application);
+      loadModel(subClassName, subSchema, config[Ember.String.dasherize(className)], config);
     }
   }
 };
 
-export default function loadModels(result, container, app) {
-  var className, schema;
+var loadModels = function(result) {
+  var className, schema, config = {};
   for (className in result) {
     schema = result[className];
     className = className.replace("::", "");
-    defineModel(className, schema, DS.Model, container, app);
+    loadModel(className, schema, DS.Model, config);
   }
-  return true;
+  return config;
+};
+
+export {
+  loadModels,
+  loadModel
 }
