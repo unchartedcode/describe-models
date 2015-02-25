@@ -94,4 +94,4 @@ var loadModels = function(result) {
 export {
   loadModels,
   loadModel
-}
+};
