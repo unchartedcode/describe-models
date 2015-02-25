@@ -1,12 +1,60 @@
 # UnchartedCode Describe Models [![Build Status][travis-badge]][travis-badge-url]
 
-Generating ember-data schema from a backend definition. Meant to be used with the ember-schema gem.
+Generating ember-data schema from a backend definition. Meant to be used with the [ember-schema](https://rubygems.org/gems/ember-schema) gem.
 
 ## Installation
 
-```
+```bash
 ember install:addon ember-cli-uncharted-describe-models
 ```
+
+## Usage
+
+**Users**: If you are using this library I'd love to hear from you. This project is used "internally" for several projects and the direction is currently driven by those. We'd be happy to see others using it as well.
+
+There are two main pieces to this library.
+
+  1. Automatically building model schema using a backend definition
+  2. Extending DS.Model with some helpful mixins
+
+
+### Automatically Defined Models
+
+For the first part it is assumed that you generate a model for every backend model. However it's not necessary to define each field. What you need before any of this is a `schema.json`. It can be generated via the command line.
+
+```bash
+ember update-models --proxy http://localhost:5000
+```
+
+This assumes you have exposed `/api/models/describe` through the _ember-schema_ gem. It will write out `app/schema.json`.
+
+Once you have that you can generate a model which will automatically pull field level and associations from the schema.
+
+```bash
+ember generate model User
+```
+
+which looks somewhat like this (in CoffeeeScript, if you use JavaScript let us know!)
+
+```coffeescript
+import DS from 'ember-data'
+import GeneratedModel from '../utils/generated-model'
+
+User = GeneratedModel('user').extend({
+
+})
+
+export default User
+```
+
+### Model Extensions
+
+There isn't anything you need to do here. `DS.Model` gets extended through an initializer with these.
+
+  * BaseUrls (provides baseApi and baseUrl methods)
+  * CommitWithoutSave (provides a commit method to update model state without firing an api request)
+  * RelationshipByIds (return ids instead of firing async requests)
+  * ThenLoaded (callback that can be used to wait until a model is fully loaded)
 
 # Development
 
