@@ -20,22 +20,19 @@ var dsTypes = {
   array:              'array'
 };
 
-var loadModel = function(className, schema, model, config) {
-  var assoc;
-  var attr;
-  var info;
-  var properties = {};
-  var subClassName;
-  var subSchema;
-  var tableName;
+var loadAttributres = function(properties, attributes) {
   var type;
-  var underscoredAttr;
-  var schemaAttributes, schemaAssociations, schemaDescendants;
+  var attr;
+  var assoc;
 
-  schemaAttributes = schema.attributes;
-  for (underscoredAttr in schemaAttributes) {
-    type = schemaAttributes[underscoredAttr];
+  for (var underscoredAttr in attributes) {
+    if (!attributes.hasOwnProperty(underscoredAttr)) {
+      continue;
+    }
+
+    type = attributes[underscoredAttr];
     attr = underscoredAttr;
+
     if (dsTypes[type] != null) {
       if (attr.match(/Id$/) && dsTypes[type] === 'number') {
         assoc = attr.replace(/Id$/, '');
@@ -46,39 +43,72 @@ var loadModel = function(className, schema, model, config) {
         }
       }
     } else {
-      Ember.Logger.warn("ERROR: Unknown type '" + type + "' for dsType in parser.js");
+      Ember.Logger.warn("Unknown type '" + type + "' for dsType in describe-models");
       properties[attr] = Ember.required();
     }
   }
+};
 
-  schemaAssociations = schema.associations;
-  for (assoc in schemaAssociations) {
-    info = schemaAssociations[assoc];
+var loadAssociations = function(properties, associations) {
+  var tableName;
+  var relationshipName;
+
+  for (var assoc in associations) {
+    if (!associations.hasOwnProperty(assoc)) {
+      continue;
+    }
+
+    var info = associations[assoc];
     assoc = assoc.replace(/_id/, '');
-    if (tableName = (info != null ? info.has_many : void 0) || (tableName = (info != null ? info.has_and_belongs_to_many : void 0) || (tableName = info != null ? info.embeds_many : void 0))) {
-      properties[assoc] = DS.hasMany(Ember.String.dasherize(tableName.replace(/_id/, '').singularize()), {
+
+    if (info === null || info === undefined) {
+      continue;
+    }
+
+    if ((tableName = info.has_many) ||
+        (tableName = info.has_and_belongs_to_many) ||
+        (tableName = info.embeds_many)) {
+      relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      properties[assoc] = DS.hasMany(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
       });
-    } else if (tableName = (info != null ? info.belongs_to : void 0) || (tableName = (info != null ? info.has_one : void 0) || (tableName = (info != null ? info.embedded_in : void 0) || (tableName = info != null ? info.embeds_one : void 0)))) {
-      properties[assoc] = DS.belongsTo(Ember.String.dasherize(tableName.replace(/_id/, '').singularize()), {
+    } else if ((tableName = info.belongs_to) ||
+               (tableName = info.has_one) ||
+               (tableName = info.embedded_in) ||
+               (tableName = info.embeds_one)) {
+      relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      properties[assoc] = DS.belongsTo(relationshipName, {
         async: info.async || false,
         polymorphic: info.polymorphic || false
       });
-    } else if (info) {
+    } else {
       throw "Relation type binding missing.";
     }
   }
+};
+
+var loadDescendants = function(descendants, callback) {
+  if (!descendants) {
+    return;
+  }
+
+  for (var subClassName in descendants) {
+    callback(subClassName, descendants[subClassName]);
+  }
+};
+
+var loadModel = function(className, schema, model, config) {
+  var properties = {};
+
+  loadAttributres(properties, schema.attributes);
+  loadAssociations(properties, schema.associations);
 
   config[Ember.String.dasherize(className)] = model.extend(properties);
 
-  if (schema.descendants) {
-    schemaDescendants = schema.descendants;
-    for (subClassName in schemaDescendants) {
-      subSchema = schemaDescendants[subClassName];
-      loadModel(subClassName, subSchema, config[Ember.String.dasherize(className)], config);
-    }
-  }
+  loadDescendants(schema.descendants, function(subClassName, subSchema) {
+    loadModel(subClassName, subSchema, config[Ember.String.dasherize(className)], config);
+  });
 };
 
 var loadModels = function(result) {
