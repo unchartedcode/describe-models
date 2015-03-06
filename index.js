@@ -23,6 +23,6 @@ module.exports = {
   includedCommands: function() {
     return {
       'update-models': require('./lib/commands/update-models')
-    }
+    };
   }
 };

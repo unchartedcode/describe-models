@@ -1,4 +1,4 @@
-import Ember from 'ember';
+// import Ember from 'ember';
 import DS from 'ember-data';
 import CommitWithoutSaveMixin from 'uncharted-describe-models/mixins/commit-without-save';
 import BaseUrlsMixin from 'uncharted-describe-models/mixins/base-urls';
