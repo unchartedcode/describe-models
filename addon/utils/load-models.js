@@ -24,6 +24,7 @@ var loadAttributres = function(properties, attributes) {
   var type;
   var attr;
   var assoc;
+  var attr_type;
 
   for (var underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
@@ -32,19 +33,15 @@ var loadAttributres = function(properties, attributes) {
 
     type = attributes[underscoredAttr];
     attr = underscoredAttr;
+    attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
-    if (dsTypes[type] != null) {
-      if (attr.match(/Id$/) && dsTypes[type] === 'number') {
-        assoc = attr.replace(/Id$/, '');
-        properties[assoc] = DS.belongsTo(assoc.capitalize());
-      } else {
-        if (!attr.match(/^id$/)) {
-          properties[attr] = DS.attr(dsTypes[type]);
-        }
-      }
+    if (attr.match(/Id$/) && attr_type === 'number') {
+      assoc = attr.replace(/Id$/, '');
+      properties[assoc] = DS.belongsTo(assoc.capitalize());
     } else {
-      Ember.Logger.warn("Unknown type '" + type + "' for dsType in describe-models");
-      properties[attr] = Ember.required();
+      if (!attr.match(/^id$/)) {
+        properties[attr] = DS.attr(attr_type);
+      }
     }
   }
 };
