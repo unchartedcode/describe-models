@@ -8,8 +8,7 @@ import RelationshipByIdsMixin from 'uncharted-describe-models/mixins/relationshi
 export function initialize(/* container, application */) {
   DS.Model.reopen(CommitWithoutSaveMixin,
                   BaseUrlsMixin,
-                  ThenLoadedMixin,
-                  RelationshipByIdsMixin);
+                  ThenLoadedMixin);
 }
 
 export default {
