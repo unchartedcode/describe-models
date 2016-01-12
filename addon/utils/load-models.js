@@ -37,7 +37,9 @@ var loadAttributres = function(properties, attributes) {
 
     if (attr.match(/Id$/) && attr_type === 'number') {
       assoc = attr.replace(/Id$/, '');
-      properties[assoc] = DS.belongsTo(assoc.capitalize());
+      properties[assoc] = DS.belongsTo(assoc.capitalize(), {
+        async: true
+      });
     } else {
       if (!attr.match(/^id$/)) {
         properties[attr] = DS.attr(attr_type);
@@ -76,7 +78,7 @@ var loadAssociations = function(properties, associations) {
                (tableName = info.embeds_one)) {
       relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
       properties[assoc] = DS.belongsTo(relationshipName, {
-        async: info.async || false,
+        async: info.async || true,
         polymorphic: info.polymorphic || false
       });
     } else {
