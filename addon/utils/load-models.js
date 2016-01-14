@@ -13,6 +13,7 @@ var dsTypes = {
   money:              'number',
   date:               'date',
   datetime:           'date',
+  time:               'date',
   'iso.date':         'iso.date',
   object:             'object',
   json:               'object',
