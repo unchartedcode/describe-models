@@ -21,7 +21,7 @@ var dsTypes = {
   array:              'array'
 };
 
-var loadAttributres = function(properties, attributes) {
+var loadAttributres = function(properties, attributes, defaults) {
   var type;
   var attr;
   var assoc;
@@ -43,7 +43,11 @@ var loadAttributres = function(properties, attributes) {
       });
     } else {
       if (!attr.match(/^id$/)) {
-        properties[attr] = DS.attr(attr_type);
+        if (typeof defaults[attr] !== "undefined") {
+          properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] }); 
+        } else {
+          properties[attr] = DS.attr(attr_type);
+        }
       }
     }
   }
@@ -101,7 +105,7 @@ var loadDescendants = function(descendants, callback) {
 var loadModel = function(className, schema, model, config) {
   var properties = {};
 
-  loadAttributres(properties, schema.attributes);
+  loadAttributres(properties, schema.attributes, schema.defaults);
   loadAssociations(properties, schema.associations);
 
   config[Ember.String.dasherize(className)] = model.extend(properties);
