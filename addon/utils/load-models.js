@@ -119,7 +119,7 @@ var loadModels = function(result) {
   var className, schema, config = {};
   for (className in result) {
     schema = result[className];
-    className = className.replace("::", "");
+    className = className.replace("::", "/");
     loadModel(className, schema, DS.Model, config);
   }
   return config;
