@@ -105,7 +105,7 @@ var loadDescendants = function(descendants, callback) {
 var loadModel = function(className, schema, model, config) {
   var properties = {};
 
-  loadAttributres(properties, schema.attributes, schema.defaults);
+  loadAttributres(properties, schema.attributes, schema.defaults || {});
   loadAssociations(properties, schema.associations);
 
   config[Ember.String.dasherize(className)] = model.extend(properties);
