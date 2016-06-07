@@ -72,7 +72,7 @@ let loadAssociations = function(properties, associations) {
         polymorphic: info.polymorphic || false
       });
       /*jshint -W083 */
-      properties[assoc + '_not_deleted'] = Ember.computed(assoc + '@each.isDeleted', function() {
+      properties[assoc + '_not_deleted'] = Ember.computed(assoc + '.@each.isDeleted', function() {
         return this.get(assoc).filterBy('isDeleted', false);
       });
       /*jshint +W083 */
