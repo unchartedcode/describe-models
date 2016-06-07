@@ -76,9 +76,11 @@ var loadAssociations = function(properties, associations) {
         async: info.async || true,
         polymorphic: info.polymorphic || false
       });
-      properties[assoc + '_undeleted'] = Ember.computed(function() {
+      /*jshint -W083 */
+      properties[assoc + '_not_deleted'] = Ember.computed(function() {
         return this.get(assoc).filterBy('isDeleted', false, { live: true });
       });
+      /*jshint +W083 */
     } else if ((tableName = info.belongs_to) ||
                (tableName = info.has_one) ||
                (tableName = info.embedded_in) ||

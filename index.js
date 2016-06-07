@@ -7,7 +7,8 @@ module.exports = {
   name: 'uncharted-describe-models',
 
   config: function(env, config) {
-    if (env !== 'test') {
+    // Make sure it isn't a test environment or ember init
+    if (env !== 'test' && env != null) {
       if (!fs.existsSync('app/schema.json')) {
         throw new Error('You must include a schema.json in the root of app/');
       }
