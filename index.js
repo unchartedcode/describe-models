@@ -7,14 +7,16 @@ module.exports = {
   name: 'uncharted-describe-models',
 
   config: function(env, config) {
-    // Make sure it isn't a test environment or ember init
-    if (env !== 'test' && env != null) {
+    // Make sure it isn't ember init
+    if (env != null) {
       if (!fs.existsSync('app/schema.json')) {
-        throw new Error('You must include a schema.json in the root of app/');
+        if (env !== 'test') {
+          throw new Error('You must include a schema.json in the root of app/');
+        }
+      } else {
+        var schema = JSON.parse(fs.readFileSync('app/schema.json', 'utf8'));
+        config['model-schema'] = schema;
       }
-
-      var schema = JSON.parse(fs.readFileSync('app/schema.json', 'utf8'));
-      config['model-schema'] = schema;
     }
     return config;
   },
