@@ -1,5 +1,8 @@
 # UnchartedCode Describe Models [![Build Status][travis-badge]][travis-badge-url]
 
+Please note, this is mainly used internally at the moment. We are making certain decisions based on our needs.
+If you would like to use this in your application then open an issue with your use case.
+
 Generating ember-data schema from a backend definition. Meant to be used with the [ember-schema](https://rubygems.org/gems/ember-schema) gem.
 
 ## Installation

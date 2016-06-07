@@ -6,7 +6,6 @@ var dsTypes = {
   text:               'string',
   "null":             'string',
   boolean:            'boolean',
-  'mongoid::boolean': 'boolean',
   decimal:            'number',
   integer:            'number',
   number:             'number',
@@ -44,7 +43,7 @@ var loadAttributres = function(properties, attributes, defaults) {
     } else {
       if (!attr.match(/^id$/)) {
         if (typeof defaults[attr] !== "undefined") {
-          properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] }); 
+          properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
         } else {
           properties[attr] = DS.attr(attr_type);
         }
@@ -76,6 +75,9 @@ var loadAssociations = function(properties, associations) {
       properties[assoc] = DS.hasMany(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
+      });
+      properties[assoc + '_undeleted'] = Ember.computed(function() {
+        return this.get(assoc).filterBy('isDeleted', false, { live: true });
       });
     } else if ((tableName = info.belongs_to) ||
                (tableName = info.has_one) ||
