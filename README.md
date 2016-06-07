@@ -47,15 +47,6 @@ User = GeneratedModel('user').extend({
 export default User
 ```
 
-### Model Extensions
-
-There isn't anything you need to do here. `DS.Model` gets extended through an initializer with these.
-
-  * BaseUrls (provides baseApi and baseUrl methods)
-  * CommitWithoutSave (provides a commit method to update model state without firing an api request)
-  * RelationshipByIds (return ids instead of firing async requests)
-  * ThenLoaded (callback that can be used to wait until a model is fully loaded)
-
 # Development
 
 ## Installation
