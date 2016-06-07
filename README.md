@@ -65,6 +65,7 @@ export default User
 
 ## Running Tests
 
+* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
@@ -72,7 +73,7 @@ export default User
 
 * `ember build`
 
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
 
 [travis-badge]: https://travis-ci.org/unchartedcode/describe-models.svg?branch=master
 [travis-badge-url]: https://travis-ci.org/unchartedcode/describe-models

@@ -1,5 +1,6 @@
 import generatedModel from '../../../utils/generated-model';
 import { loadDefinitions } from '../../../utils/model-definitions';
+import { module, test } from 'qunit';
 
 module('generatedModel', {
   setup: function() {
@@ -10,7 +11,7 @@ module('generatedModel', {
 });
 
 // Replace this with your real tests.
-test('it works', function() {
+test('it works', function(assert) {
   var result = generatedModel("User");
-  ok(result);
+  assert.ok(result);
 });
