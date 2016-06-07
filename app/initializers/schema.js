@@ -9,5 +9,6 @@ export function initialize(/*container, application*/) {
 export default {
   name: 'uncharted-schema',
   before: 'ember-data',
+  after: 'livefilter',
   initialize: initialize
 };
