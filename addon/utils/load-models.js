@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 
-var dsTypes = {
+let dsTypes = {
   string:             'string',
   text:               'string',
   "null":             'string',
@@ -20,20 +20,15 @@ var dsTypes = {
   array:              'array'
 };
 
-var loadAttributres = function(properties, attributes, defaults) {
-  var type;
-  var attr;
-  var assoc;
-  var attr_type;
-
-  for (var underscoredAttr in attributes) {
+let loadAttributres = function(properties, attributes, defaults) {
+  for (let underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
       continue;
     }
 
-    type = attributes[underscoredAttr];
-    attr = underscoredAttr;
-    attr_type = dsTypes[type] != null ? dsTypes[type] : type;
+    let type = attributes[underscoredAttr];
+    let attr = underscoredAttr;
+    let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
     if (attr.match(/Id$/) && attr_type === 'number') {
       assoc = attr.replace(/Id$/, '');
@@ -52,26 +47,26 @@ var loadAttributres = function(properties, attributes, defaults) {
   }
 };
 
-var loadAssociations = function(properties, associations) {
-  var tableName;
-  var relationshipName;
+let loadAssociations = function(properties, associations) {
+  let relationshipName;
 
-  for (var assoc in associations) {
+  for (let assoc in associations) {
     if (!associations.hasOwnProperty(assoc)) {
       continue;
     }
 
-    var info = associations[assoc];
+    let info = associations[assoc];
     assoc = assoc.replace(/_id/, '');
 
     if (info === null || info === undefined) {
       continue;
     }
 
+    let tableName;
     if ((tableName = info.has_many) ||
         (tableName = info.has_and_belongs_to_many) ||
         (tableName = info.embeds_many)) {
-      relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
       properties[assoc] = DS.hasMany(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
@@ -85,7 +80,7 @@ var loadAssociations = function(properties, associations) {
                (tableName = info.has_one) ||
                (tableName = info.embedded_in) ||
                (tableName = info.embeds_one)) {
-      relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
       properties[assoc] = DS.belongsTo(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
@@ -96,18 +91,18 @@ var loadAssociations = function(properties, associations) {
   }
 };
 
-var loadDescendants = function(descendants, callback) {
+let loadDescendants = function(descendants, callback) {
   if (!descendants) {
     return;
   }
 
-  for (var subClassName in descendants) {
+  for (let subClassName in descendants) {
     callback(subClassName, descendants[subClassName]);
   }
 };
 
-var loadModel = function(className, schema, model, config) {
-  var properties = {};
+let loadModel = function(className, schema, model, config) {
+  let properties = {};
 
   loadAttributres(properties, schema.attributes, schema.defaults || {});
   loadAssociations(properties, schema.associations);
@@ -119,10 +114,10 @@ var loadModel = function(className, schema, model, config) {
   });
 };
 
-var loadModels = function(result) {
-  var className, schema, config = {};
-  for (className in result) {
-    schema = result[className];
+let loadModels = function(result) {
+  let config = {};
+  for (let className in result) {
+    let schema = result[className];
     className = className.replace("::", "/");
     loadModel(className, schema, DS.Model, config);
   }

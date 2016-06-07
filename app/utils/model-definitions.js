@@ -1,9 +1,9 @@
 import { loadModels } from 'uncharted-describe-models/utils/load-models';
 
-var Definitions = {};
+let Definitions = {};
 
-var loadDefinitions = function(definitions) {
-  for (var key in definitions) {
+let loadDefinitions = function(definitions) {
+  for (let key in definitions) {
     if (!definitions.hasOwnProperty(key)) {
       continue;
     }
@@ -12,9 +12,9 @@ var loadDefinitions = function(definitions) {
   }
 };
 
-var modelNames = function() {
-  var names = [];
-  for (var key in Definitions) {
+let modelNames = function() {
+  let names = [];
+  for (let key in Definitions) {
     if (!Definitions.hasOwnProperty(key)) {
       continue;
     }
@@ -24,7 +24,7 @@ var modelNames = function() {
   return names;
 };
 
-var loadModelDefinitions = function(schema) {
+let loadModelDefinitions = function(schema) {
   return function() {
     loadDefinitions(loadModels(schema));
     this.needs.push.apply(this.needs, modelNames());
