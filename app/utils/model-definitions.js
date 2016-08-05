@@ -24,9 +24,9 @@ let modelNames = function() {
   return names;
 };
 
-let loadModelDefinitions = function(schema) {
+let loadModelDefinitions = function(schema, options) {
   return function() {
-    loadDefinitions(loadModels(schema));
+    loadDefinitions(loadModels(schema, options));
     this.needs.push.apply(this.needs, modelNames());
   };
 };

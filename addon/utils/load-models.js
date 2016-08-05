@@ -30,24 +30,15 @@ let loadAttributres = function(properties, attributes, defaults) {
     let attr = underscoredAttr;
     let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
-    if (attr.match(/Id$/) && attr_type === 'number') {
-      assoc = attr.replace(/Id$/, '');
-      properties[assoc] = DS.belongsTo(assoc.capitalize(), {
-        async: true
-      });
+    if (typeof defaults[attr] !== "undefined") {
+      properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
     } else {
-      if (!attr.match(/^id$/)) {
-        if (typeof defaults[attr] !== "undefined") {
-          properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
-        } else {
-          properties[attr] = DS.attr(attr_type);
-        }
-      }
+      properties[attr] = DS.attr(attr_type);
     }
   }
 };
 
-let loadAssociations = function(properties, associations) {
+let loadAssociations = function(properties, associations, options) {
   let relationshipName;
 
   for (let assoc in associations) {
@@ -58,7 +49,7 @@ let loadAssociations = function(properties, associations) {
     let info = associations[assoc];
     assoc = assoc.replace(/_id/, '');
 
-    if (info === null || info === undefined) {
+    if (info == null) {
       continue;
     }
 
@@ -67,6 +58,12 @@ let loadAssociations = function(properties, associations) {
         (tableName = info.has_and_belongs_to_many) ||
         (tableName = info.embeds_many)) {
       let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+
+      // If the association is in the skip list, don't create it.
+      if (options.skip.indexOf(relationshipName) >= 0) {
+        continue;
+      }
+
       properties[assoc] = DS.hasMany(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
@@ -81,6 +78,12 @@ let loadAssociations = function(properties, associations) {
                (tableName = info.embedded_in) ||
                (tableName = info.embeds_one)) {
       let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+
+      // If the association is in the skip list, don't create it.
+      if (options.skip.indexOf(relationshipName) >= 0) {
+        continue;
+      }
+
       properties[assoc] = DS.belongsTo(relationshipName, {
         async: info.async || true,
         polymorphic: info.polymorphic || false
@@ -91,35 +94,54 @@ let loadAssociations = function(properties, associations) {
   }
 };
 
-let loadDescendants = function(descendants, callback) {
-  if (!descendants) {
+// let loadDescendants = function(descendants, callback) {
+//   if (Ember.isBlank(descendants)) {
+//     return;
+//   }
+
+//   for (let subClassName in descendants) {
+//     callback(subClassName, descendants[subClassName]);
+//   }
+// };
+
+let loadModel = function(modelName, schema, options, model, config) {
+  let properties = {};
+
+  // If the environment skip name is there, return
+  if (options.skip.indexOf(modelName) >= 0) {
     return;
   }
 
-  for (let subClassName in descendants) {
-    callback(subClassName, descendants[subClassName]);
-  }
-};
-
-let loadModel = function(className, schema, model, config) {
-  let properties = {};
-
   loadAttributres(properties, schema.attributes, schema.defaults || {});
-  loadAssociations(properties, schema.associations);
+  loadAssociations(properties, schema.associations, options);
 
-  config[Ember.String.dasherize(className)] = model.extend(properties);
+  config[modelName] = model.extend(properties);
 
-  loadDescendants(schema.descendants, function(subClassName, subSchema) {
-    loadModel(subClassName, subSchema, config[Ember.String.dasherize(className)], config);
-  });
+  // loadDescendants(schema.descendants, function(subModelName, subSchema) {
+  //   subModelName = convertModelName(subModelName);
+  //   loadModel(subModelName, subSchema, options, config[modelName], config);
+  // });
 };
 
-let loadModels = function(result) {
+let convertModelName = function(modelName) {
+  modelName = modelName.replace("::", "/");
+  modelName = Ember.String.dasherize(modelName);
+  return modelName;
+};
+
+let loadModels = function(modelNames, options) {
+  if (Ember.isBlank(options)) {
+    options = {};
+  }
+  if (Ember.isBlank(options.skip)) {
+    options.skip = [];
+  }
+
   let config = {};
-  for (let className in result) {
-    let schema = result[className];
-    className = className.replace("::", "/");
-    loadModel(className, schema, DS.Model, config);
+  for (let modelName in modelNames) {
+    let schema = modelNames[modelName];
+    modelName = convertModelName(modelName);
+    loadModel(modelName, schema, options, DS.Model, config);
   }
   return config;
 };

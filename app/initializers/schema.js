@@ -3,7 +3,7 @@ import config from '../config/environment';
 import { loadDefinitions } from '../utils/model-definitions';
 
 export function initialize(/*container, application*/) {
-  loadDefinitions(loadModels(config['model-schema']));
+  loadDefinitions(loadModels(config['model-schema'], config['describe-models']));
 }
 
 export default {
