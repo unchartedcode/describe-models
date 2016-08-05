@@ -30,10 +30,12 @@ let loadAttributres = function(properties, attributes, defaults) {
     let attr = underscoredAttr;
     let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
-    if (typeof defaults[attr] !== "undefined") {
-      properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
-    } else {
-      properties[attr] = DS.attr(attr_type);
+    if (!attr.match(/^id$/)) {
+      if (typeof defaults[attr] !== "undefined") {
+        properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
+      } else {
+        properties[attr] = DS.attr(attr_type);
+      }
     }
   }
 };
