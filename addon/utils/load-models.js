@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DS from 'ember-data';
+import { singularize } from 'ember-inflector';
 
 let dsTypes = {
   string:             'string',
@@ -59,7 +60,7 @@ let loadAssociations = function(properties, associations, options) {
     if ((tableName = info.has_many) ||
         (tableName = info.has_and_belongs_to_many) ||
         (tableName = info.embeds_many)) {
-      let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      let relationshipName = singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
 
       // If the association is in the skip list, don't create it.
       if (options.skip.indexOf(relationshipName) >= 0) {
@@ -70,16 +71,11 @@ let loadAssociations = function(properties, associations, options) {
         async: info.async || true,
         polymorphic: info.polymorphic || false
       });
-      /*jshint -W083 */
-      properties[assoc + '_not_deleted'] = Ember.computed(assoc + '.@each.isDeleted', function() {
-        return this.get(assoc).filterBy('isDeleted', false);
-      });
-      /*jshint +W083 */
     } else if ((tableName = info.belongs_to) ||
                (tableName = info.has_one) ||
                (tableName = info.embedded_in) ||
                (tableName = info.embeds_one)) {
-      let relationshipName = Ember.String.dasherize(tableName.replace(/_id/, '').singularize());
+      let relationshipName = singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
 
       // If the association is in the skip list, don't create it.
       if (options.skip.indexOf(relationshipName) >= 0) {
