@@ -1,5 +1,5 @@
-import generatedModel from '../../../utils/generated-model';
-import { loadDefinitions } from '../../../utils/model-definitions';
+import generatedModel from 'uncharted-describe-models/utils/generated-model';
+import { loadDefinitions } from 'uncharted-describe-models/utils/model-definitions';
 import { module, test } from 'qunit';
 
 module('generatedModel', {
