@@ -41,6 +41,13 @@ let loadAttributres = function(properties, attributes, defaults) {
   }
 };
 
+let cleanTableName = function(tableName) {
+  if (tableName.indexOf('/') === 0) {
+    tableName = tableName.substr(1);
+  }
+  return singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
+};
+
 let loadAssociations = function(properties, associations, options) {
   let relationshipName;
 
@@ -60,7 +67,7 @@ let loadAssociations = function(properties, associations, options) {
     if ((tableName = info.has_many) ||
         (tableName = info.has_and_belongs_to_many) ||
         (tableName = info.embeds_many)) {
-      let relationshipName = singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
+      let relationshipName = cleanTableName(tableName);
 
       // If the association is in the skip list, don't create it.
       if (options.skip.indexOf(relationshipName) >= 0) {
@@ -75,7 +82,7 @@ let loadAssociations = function(properties, associations, options) {
                (tableName = info.has_one) ||
                (tableName = info.embedded_in) ||
                (tableName = info.embeds_one)) {
-      let relationshipName = singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
+      let relationshipName = cleanTableName(tableName);
 
       // If the association is in the skip list, don't create it.
       if (options.skip.indexOf(relationshipName) >= 0) {
