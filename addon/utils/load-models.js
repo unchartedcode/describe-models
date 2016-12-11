@@ -17,6 +17,7 @@ let dsTypes = {
   'iso.date':         'iso.date',
   object:             'object',
   json:               'object',
+  jsonb:              'object',
   hstore:             'object',
   array:              'array'
 };
