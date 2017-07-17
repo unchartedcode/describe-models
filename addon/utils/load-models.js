@@ -34,6 +34,12 @@ let loadAttributres = function(properties, attributes, _options) {
     let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
     if (!attr.match(/^id$/)) {
+      if (attributes[underscoredAttr] != null && attributes[underscoredAttr]['defaultValue'] != null) {
+        let defaultValue = attributes[underscoredAttr]['defaultValue'];
+        if (typeof defaultValue === 'object') {
+          attributes[underscoredAttr]['defaultValue'] = function() { return defaultValue; };
+        }
+      }
       properties[attr] = DS.attr(attr_type, attributes[underscoredAttr]);
     }
   }
