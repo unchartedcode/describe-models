@@ -37,35 +37,22 @@ Once you have that you can generate a model which will automatically pull field 
 ember generate model User
 ```
 
-which looks somewhat like this (in CoffeeeScript, if you use JavaScript let us know!)
-
-```coffeescript
-import DS from 'ember-data'
-import GeneratedModel from '../utils/generated-model'
-
-User = GeneratedModel('user').extend({
-
-})
-
-export default User
-```
-
 # Development
 
 ## Installation
 
-* `git clone` this repository
+* `git clone <repository-url>` this repository
+* `cd ember-cli-uncharted-describe-models`
 * `npm install`
-* `bower install`
 
 ## Running
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+* `ember serve`
+* Visit your app at [http://localhost:4200](http://localhost:4200).
 
 ## Running Tests
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
+* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
 * `ember test`
 * `ember test --server`
 
@@ -73,7 +60,7 @@ export default User
 
 * `ember build`
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 
 [travis-badge]: https://travis-ci.org/unchartedcode/describe-models.svg?branch=master
 [travis-badge-url]: https://travis-ci.org/unchartedcode/describe-models
