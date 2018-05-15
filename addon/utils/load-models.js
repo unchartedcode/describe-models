@@ -22,22 +22,25 @@ let dsTypes = {
   array:              'array'
 };
 
-let loadAttributres = function(properties, attributes, defaults) {
+let loadAttributres = function(properties, attributes, _options) {
   for (let underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
       continue;
     }
 
-    let type = attributes[underscoredAttr];
+    let type = attributes[underscoredAttr]['type'];
+    delete attributes[underscoredAttr]['type'];
     let attr = underscoredAttr;
     let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
 
     if (!attr.match(/^id$/)) {
-      if (typeof defaults[attr] !== "undefined") {
-        properties[attr] = DS.attr(attr_type, { defaultValue: defaults[attr] });
-      } else {
-        properties[attr] = DS.attr(attr_type);
+      if (attributes[underscoredAttr] != null && attributes[underscoredAttr]['defaultValue'] != null) {
+        let defaultValue = attributes[underscoredAttr]['defaultValue'];
+        if (typeof defaultValue === 'object') {
+          attributes[underscoredAttr]['defaultValue'] = function() { return defaultValue; };
+        }
       }
+      properties[attr] = DS.attr(attr_type, attributes[underscoredAttr]);
     }
   }
 };
@@ -118,7 +121,7 @@ let loadModel = function(modelName, schema, options, model, config) {
     return;
   }
 
-  loadAttributres(properties, schema.attributes, schema.defaults || {});
+  loadAttributres(properties, schema.attributes, options);
   loadAssociations(properties, schema.associations, options);
 
   config[modelName] = model.extend(properties);
