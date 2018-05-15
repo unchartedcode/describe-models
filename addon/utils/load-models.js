@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { isBlank } from '@ember/utils';
+import { dasherize } from '@ember/string';
 import DS from 'ember-data';
 import { singularize } from 'ember-inflector';
 
@@ -49,7 +50,7 @@ let cleanTableName = function(tableName) {
   if (tableName.indexOf('/') === 0) {
     tableName = tableName.substr(1);
   }
-  return singularize(Ember.String.dasherize(tableName.replace(/_id/, '')));
+  return singularize(dasherize(tableName.replace(/_id/, '')));
 };
 
 let loadAssociations = function(properties, associations, options) {
@@ -134,15 +135,15 @@ let loadModel = function(modelName, schema, options, model, config) {
 
 let convertModelName = function(modelName) {
   modelName = modelName.replace("::", "/");
-  modelName = Ember.String.dasherize(modelName);
+  modelName = dasherize(modelName);
   return modelName;
 };
 
 let loadModels = function(modelNames, options) {
-  if (Ember.isBlank(options)) {
+  if (isBlank(options)) {
     options = {};
   }
-  if (Ember.isBlank(options.skip)) {
+  if (isBlank(options.skip)) {
     options.skip = [];
   }
 
