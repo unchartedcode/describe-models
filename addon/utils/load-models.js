@@ -79,10 +79,16 @@ let loadAssociations = function(properties, associations, options) {
         continue;
       }
 
-      properties[assoc] = DS.hasMany(relationshipName, {
+      let data = {
         async: info.async || true,
         polymorphic: info.polymorphic || false
-      });
+      };
+
+      if (info.hasOwnProperty('inverse')) {
+        data.inverse = info.inverse;
+      }
+
+      properties[assoc] = DS.hasMany(relationshipName, data);
     } else if ((tableName = info.belongs_to) ||
                (tableName = info.has_one) ||
                (tableName = info.embedded_in) ||
@@ -94,10 +100,16 @@ let loadAssociations = function(properties, associations, options) {
         continue;
       }
 
-      properties[assoc] = DS.belongsTo(relationshipName, {
+      let data = {
         async: info.async || true,
         polymorphic: info.polymorphic || false
-      });
+      };
+
+      if (info.hasOwnProperty('inverse')) {
+        data.inverse = info.inverse;
+      }
+
+      properties[assoc] = DS.belongsTo(relationshipName, data);
     } else {
       throw "Relation type binding missing.";
     }
