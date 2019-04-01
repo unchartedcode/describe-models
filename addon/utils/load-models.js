@@ -29,22 +29,25 @@ const loadAttributres = function(properties, attributes, _options) {
       continue;
     }
 
-    let type = attributes[underscoredAttr]['type'];
-    delete attributes[underscoredAttr]['type'];
-    let attr = underscoredAttr;
-    let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
+    // Perform shallow copy to avoid delete issues
+    const attributeData = Object.assign({}, attributes[underscoredAttr]);
+
+    let type = attributeData['type'];
+    delete attributeData['type'];
+    let attributeName = underscoredAttr;
+    let attributeType = dsTypes[type] != null ? dsTypes[type] : type;
     if (dsTypes[type] == null) {
       console.warn(`The type '${type}' was not found in dsTypes`);
     }
 
-    if (!attr.match(/^id$/)) {
-      if (attributes[underscoredAttr] != null && attributes[underscoredAttr]['defaultValue'] != null) {
-        let defaultValue = attributes[underscoredAttr]['defaultValue'];
+    if (!attributeName.match(/^id$/)) {
+      if (attributeData != null && attributeData['defaultValue'] != null) {
+        let defaultValue = attributeData['defaultValue'];
         if (typeof defaultValue === 'object') {
-          attributes[underscoredAttr]['defaultValue'] = function() { return defaultValue; };
+          attributeData['defaultValue'] = function() { return defaultValue; };
         }
       }
-      properties[attr] = DS.attr(attr_type, attributes[underscoredAttr]);
+      properties[attributeName] = DS.attr(attributeType, attributeData);
     }
   }
 };
@@ -140,17 +143,19 @@ const convertModelName = function(modelName) {
 };
 
 const loadModels = function(modelNames, options) {
-  const clonedModelNames = Object.assign({}, modelNames);
-  const clonedOptions = Object.assign({}, options);
-  if (isBlank(clonedOptions.skip)) {
-    clonedOptions.skip = [];
+  if (isBlank(options)) {
+    options = {};
+  }
+
+  if (isBlank(options.skip)) {
+    options.skip = [];
   }
 
   let config = {};
-  for (let modelName in clonedModelNames) {
-    let schema = clonedModelNames[modelName];
+  for (let modelName in modelNames) {
+    let schema = modelNames[modelName];
     modelName = convertModelName(modelName);
-    loadModel(modelName, schema, clonedOptions, config);
+    loadModel(modelName, schema, options, config);
   }
   return config;
 };
