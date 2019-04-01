@@ -53,10 +53,11 @@ const loadAttributres = function(properties, attributes, _options) {
 };
 
 const cleanTableName = function(tableName) {
-  // if (tableName.indexOf('/') === 0) {
-  //   tableName = tableName.substr(1);
-  // }
-  return singularize(dasherize(tableName.replace(/_id/, '')));
+  tableName = tableName.replace('/', '-');
+  tableName = tableName.replace(/_id/, '');
+  tableName = dasherize(tableName);
+  tableName = singularize(tableName);
+  return tableName;
 };
 
 const loadAssociations = function(properties, associations, options) {
