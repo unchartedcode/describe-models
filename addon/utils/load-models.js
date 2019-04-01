@@ -140,18 +140,17 @@ const convertModelName = function(modelName) {
 };
 
 const loadModels = function(modelNames, options) {
-  if (isBlank(options)) {
-    options = {};
-  }
-  if (isBlank(options.skip)) {
-    options.skip = [];
+  const clonedModelNames = Object.assign({}, schema);
+  const clonedOptions = Object.assign({}, options);
+  if (isBlank(clonedOptions.skip)) {
+    clonedOptions.skip = [];
   }
 
   let config = {};
-  for (let modelName in modelNames) {
-    let schema = modelNames[modelName];
+  for (let modelName in clonedModelNames) {
+    let schema = clonedModelNames[modelName];
     modelName = convertModelName(modelName);
-    loadModel(modelName, schema, options, config);
+    loadModel(modelName, schema, clonedOptions, config);
   }
   return config;
 };
