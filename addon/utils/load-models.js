@@ -3,27 +3,27 @@ import { dasherize } from '@ember/string';
 import DS from 'ember-data';
 import { singularize } from 'ember-inflector';
 
-let dsTypes = {
+const dsTypes = {
   string:             'string',
-  text:               'string',
-  "null":             'string',
   boolean:            'boolean',
   decimal:            'number',
   integer:            'number',
-  number:             'number',
-  money:              'number',
   date:               'date',
   datetime:           'date',
-  time:               'date',
-  'iso.date':         'iso.date',
   object:             'object',
-  json:               'object',
   jsonb:              'object',
-  hstore:             'object',
   array:              'array'
+  // Not used at the moment
+  // text:               'string',
+  // 'null':             'string',
+  // number:             'number',
+  // money:              'number',
+  // time:               'date',
+  // json:               'object',
+  // hstore:             'object',
 };
 
-let loadAttributres = function(properties, attributes, _options) {
+const loadAttributres = function(properties, attributes, _options) {
   for (let underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
       continue;
@@ -33,6 +33,9 @@ let loadAttributres = function(properties, attributes, _options) {
     delete attributes[underscoredAttr]['type'];
     let attr = underscoredAttr;
     let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
+    if (dsTypes[type] == null) {
+      console.warn(`The type '${type}' was not found in dsTypes`);
+    }
 
     if (!attr.match(/^id$/)) {
       if (attributes[underscoredAttr] != null && attributes[underscoredAttr]['defaultValue'] != null) {
@@ -46,14 +49,14 @@ let loadAttributres = function(properties, attributes, _options) {
   }
 };
 
-let cleanTableName = function(tableName) {
-  if (tableName.indexOf('/') === 0) {
-    tableName = tableName.substr(1);
-  }
+const cleanTableName = function(tableName) {
+  // if (tableName.indexOf('/') === 0) {
+  //   tableName = tableName.substr(1);
+  // }
   return singularize(dasherize(tableName.replace(/_id/, '')));
 };
 
-let loadAssociations = function(properties, associations, options) {
+const loadAssociations = function(properties, associations, options) {
   let relationshipName;
 
   for (let assoc in associations) {
@@ -116,17 +119,7 @@ let loadAssociations = function(properties, associations, options) {
   }
 };
 
-// let loadDescendants = function(descendants, callback) {
-//   if (Ember.isBlank(descendants)) {
-//     return;
-//   }
-
-//   for (let subClassName in descendants) {
-//     callback(subClassName, descendants[subClassName]);
-//   }
-// };
-
-let loadModel = function(modelName, schema, options, model, config) {
+const loadModel = function(modelName, schema, options, config) {
   let properties = {};
 
   // If the environment skip name is there, return
@@ -137,21 +130,16 @@ let loadModel = function(modelName, schema, options, model, config) {
   loadAttributres(properties, schema.attributes, options);
   loadAssociations(properties, schema.associations, options);
 
-  config[modelName] = model.extend(properties);
-
-  // loadDescendants(schema.descendants, function(subModelName, subSchema) {
-  //   subModelName = convertModelName(subModelName);
-  //   loadModel(subModelName, subSchema, options, config[modelName], config);
-  // });
+  config[modelName] = DS.Model.extend(properties);
 };
 
-let convertModelName = function(modelName) {
-  modelName = modelName.replace("::", "/");
+const convertModelName = function(modelName) {
+  modelName = modelName.replace("::", "-");
   modelName = dasherize(modelName);
   return modelName;
 };
 
-let loadModels = function(modelNames, options) {
+const loadModels = function(modelNames, options) {
   if (isBlank(options)) {
     options = {};
   }
@@ -163,7 +151,7 @@ let loadModels = function(modelNames, options) {
   for (let modelName in modelNames) {
     let schema = modelNames[modelName];
     modelName = convertModelName(modelName);
-    loadModel(modelName, schema, options, DS.Model, config);
+    loadModel(modelName, schema, options, config);
   }
   return config;
 };

@@ -1,1 +1,1 @@
-export { default, loadDefinitions, modelNames, loadModelDefinitions } from 'uncharted-describe-models/utils/model-definitions';
+export { default, loadDefinitions, loadModelDefinitions } from 'uncharted-describe-models/utils/model-definitions';
