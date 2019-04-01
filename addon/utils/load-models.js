@@ -140,7 +140,7 @@ const convertModelName = function(modelName) {
 };
 
 const loadModels = function(modelNames, options) {
-  const clonedModelNames = Object.assign({}, schema);
+  const clonedModelNames = Object.assign({}, modelNames);
   const clonedOptions = Object.assign({}, options);
   if (isBlank(clonedOptions.skip)) {
     clonedOptions.skip = [];
