@@ -1,1 +1,1 @@
-export { default } from 'uncharted-describe-models/utils/generated-model';
+export { default } from 'ember-cli-uncharted-describe-models/utils/generated-model';

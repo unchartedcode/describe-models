@@ -1,14 +1,22 @@
 # UnchartedCode Describe Models [![Build Status][travis-badge]][travis-badge-url]
+==============================================================================
 
 Please note, this is mainly used internally at the moment. We are making certain decisions based on our needs.
 If you would like to use this in your application then open an issue with your use case.
 
 Generating ember-data schema from a backend definition. Meant to be used with the [ember-schema](https://rubygems.org/gems/ember-schema) gem.
 
+Compatibility
+------------------------------------------------------------------------------
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+* Node.js v8 or above
+
 ## Installation
 
 ```bash
-ember install:addon ember-cli-uncharted-describe-models
+ember install ember-cli-uncharted-describe-models
 ```
 
 ## Usage
@@ -37,30 +45,16 @@ Once you have that you can generate a model which will automatically pull field 
 ember generate model User
 ```
 
-# Development
+Contributing
+------------------------------------------------------------------------------
 
-## Installation
+See the [Contributing](CONTRIBUTING.md) guide for details.
 
-* `git clone <repository-url>` this repository
-* `cd ember-cli-uncharted-describe-models`
-* `npm install`
 
-## Running
+License
+------------------------------------------------------------------------------
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-
-## Running Tests
-
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+This project is licensed under the [MIT License](LICENSE.md).
 
 [travis-badge]: https://travis-ci.org/unchartedcode/describe-models.svg?branch=master
 [travis-badge-url]: https://travis-ci.org/unchartedcode/describe-models

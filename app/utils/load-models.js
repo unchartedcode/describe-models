@@ -1,1 +1,1 @@
-export { loadModels, loadModel } from 'uncharted-describe-models/utils/load-models';
+export { loadModels, loadModel } from 'ember-cli-uncharted-describe-models/utils/load-models';

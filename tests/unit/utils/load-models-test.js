@@ -1,4 +1,4 @@
-import { loadModels } from 'uncharted-describe-models/utils/load-models';
+import { loadModels } from 'ember-cli-uncharted-describe-models/utils/load-models';
 import { module, test } from 'qunit';
 
 module('loadModels');
