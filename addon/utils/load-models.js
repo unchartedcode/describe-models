@@ -3,57 +3,64 @@ import { dasherize } from '@ember/string';
 import DS from 'ember-data';
 import { singularize } from 'ember-inflector';
 
-let dsTypes = {
+const dsTypes = {
   string:             'string',
-  text:               'string',
-  "null":             'string',
   boolean:            'boolean',
   decimal:            'number',
   integer:            'number',
-  number:             'number',
-  money:              'number',
   date:               'date',
   datetime:           'date',
-  time:               'date',
-  'iso.date':         'iso.date',
   object:             'object',
-  json:               'object',
   jsonb:              'object',
-  hstore:             'object',
   array:              'array'
+  // Not used at the moment
+  // text:               'string',
+  // 'null':             'string',
+  // number:             'number',
+  // money:              'number',
+  // time:               'date',
+  // json:               'object',
+  // hstore:             'object',
 };
 
-let loadAttributres = function(properties, attributes, _options) {
+const loadAttributres = function(properties, attributes, _options) {
   for (let underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
       continue;
     }
 
-    let type = attributes[underscoredAttr]['type'];
-    delete attributes[underscoredAttr]['type'];
-    let attr = underscoredAttr;
-    let attr_type = dsTypes[type] != null ? dsTypes[type] : type;
+    // Perform shallow copy to avoid delete issues
+    const attributeData = Object.assign({}, attributes[underscoredAttr]);
 
-    if (!attr.match(/^id$/)) {
-      if (attributes[underscoredAttr] != null && attributes[underscoredAttr]['defaultValue'] != null) {
-        let defaultValue = attributes[underscoredAttr]['defaultValue'];
+    let type = attributeData['type'];
+    delete attributeData['type'];
+    let attributeName = underscoredAttr;
+    let attributeType = dsTypes[type] != null ? dsTypes[type] : type;
+    if (dsTypes[type] == null) {
+      console.warn(`The type '${type}' was not found in dsTypes`);
+    }
+
+    if (!attributeName.match(/^id$/)) {
+      if (attributeData != null && attributeData['defaultValue'] != null) {
+        let defaultValue = attributeData['defaultValue'];
         if (typeof defaultValue === 'object') {
-          attributes[underscoredAttr]['defaultValue'] = function() { return defaultValue; };
+          attributeData['defaultValue'] = function() { return defaultValue; };
         }
       }
-      properties[attr] = DS.attr(attr_type, attributes[underscoredAttr]);
+      properties[attributeName] = DS.attr(attributeType, attributeData);
     }
   }
 };
 
-let cleanTableName = function(tableName) {
-  if (tableName.indexOf('/') === 0) {
-    tableName = tableName.substr(1);
-  }
-  return singularize(dasherize(tableName.replace(/_id/, '')));
+const cleanTableName = function(tableName) {
+  tableName = tableName.replace('/', '-');
+  tableName = tableName.replace(/_id/, '');
+  tableName = dasherize(tableName);
+  tableName = singularize(tableName);
+  return tableName;
 };
 
-let loadAssociations = function(properties, associations, options) {
+const loadAssociations = function(properties, associations, options) {
   let relationshipName;
 
   for (let assoc in associations) {
@@ -116,17 +123,7 @@ let loadAssociations = function(properties, associations, options) {
   }
 };
 
-// let loadDescendants = function(descendants, callback) {
-//   if (Ember.isBlank(descendants)) {
-//     return;
-//   }
-
-//   for (let subClassName in descendants) {
-//     callback(subClassName, descendants[subClassName]);
-//   }
-// };
-
-let loadModel = function(modelName, schema, options, model, config) {
+const loadModel = function(modelName, schema, options, config) {
   let properties = {};
 
   // If the environment skip name is there, return
@@ -137,24 +134,20 @@ let loadModel = function(modelName, schema, options, model, config) {
   loadAttributres(properties, schema.attributes, options);
   loadAssociations(properties, schema.associations, options);
 
-  config[modelName] = model.extend(properties);
-
-  // loadDescendants(schema.descendants, function(subModelName, subSchema) {
-  //   subModelName = convertModelName(subModelName);
-  //   loadModel(subModelName, subSchema, options, config[modelName], config);
-  // });
+  config[modelName] = DS.Model.extend(properties);
 };
 
-let convertModelName = function(modelName) {
-  modelName = modelName.replace("::", "/");
+const convertModelName = function(modelName) {
+  modelName = modelName.replace("::", "-");
   modelName = dasherize(modelName);
   return modelName;
 };
 
-let loadModels = function(modelNames, options) {
+const loadModels = function(modelNames, options) {
   if (isBlank(options)) {
     options = {};
   }
+
   if (isBlank(options.skip)) {
     options.skip = [];
   }
@@ -163,7 +156,7 @@ let loadModels = function(modelNames, options) {
   for (let modelName in modelNames) {
     let schema = modelNames[modelName];
     modelName = convertModelName(modelName);
-    loadModel(modelName, schema, options, DS.Model, config);
+    loadModel(modelName, schema, options, config);
   }
   return config;
 };
