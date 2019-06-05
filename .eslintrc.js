@@ -11,6 +11,11 @@ module.exports = {
     'eslint:recommended',
     'plugin:ember/recommended'
   ],
+  globals: {
+    'require': true,
+    'module': true,
+    'SilentError': true
+  },
   env: {
     browser: true
   },
