@@ -3,14 +3,14 @@ import { loadDefinitions } from 'ember-cli-uncharted-describe-models/utils/model
 import { module, test } from 'qunit';
 import DS from 'ember-data';
 
-module('generatedModel');
+module('generatedModel', function() {
+  // Replace this with your real tests.
+  test('it works', function(assert) {
+    loadDefinitions({
+      "User": DS.Model
+    });
 
-// Replace this with your real tests.
-test('it works', function(assert) {
-  loadDefinitions({
-    "User": DS.Model
+    var result = generatedModel("User");
+    assert.ok(result);
   });
-
-  var result = generatedModel("User");
-  assert.ok(result);
 });
