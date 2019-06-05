@@ -23,7 +23,7 @@ const dsTypes = {
   // hstore:             'object',
 };
 
-const loadAttributres = function(properties, attributes, _options) {
+const loadAttributres = function(properties, attributes) { // , _options
   for (let underscoredAttr in attributes) {
     if (!attributes.hasOwnProperty(underscoredAttr)) {
       continue;
@@ -37,7 +37,7 @@ const loadAttributres = function(properties, attributes, _options) {
     let attributeName = underscoredAttr;
     let attributeType = dsTypes[type] != null ? dsTypes[type] : type;
     if (dsTypes[type] == null) {
-      console.warn(`The type '${type}' was not found in dsTypes`);
+      window.console.warn(`The type '${type}' was not found in dsTypes`);
     }
 
     if (!attributeName.match(/^id$/)) {
@@ -61,8 +61,6 @@ const cleanTableName = function(tableName) {
 };
 
 const loadAssociations = function(properties, associations, options) {
-  let relationshipName;
-
   for (let assoc in associations) {
     if (!associations.hasOwnProperty(assoc)) {
       continue;

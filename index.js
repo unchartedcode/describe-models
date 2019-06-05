@@ -3,7 +3,7 @@
 var fs = require('fs');
 
 module.exports = {
-  name: 'uncharted-describe-models',
+  name: require('./package').name,
 
   config: function(env, config) {
     // Make sure it isn't ember init
