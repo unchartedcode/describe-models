@@ -12,7 +12,8 @@ const dsTypes = {
   datetime:           'date',
   object:             'object',
   jsonb:              'object',
-  array:              'array'
+  array:              'array',
+  uuid:               'string'
   // Not used at the moment
   // text:               'string',
   // 'null':             'string',
