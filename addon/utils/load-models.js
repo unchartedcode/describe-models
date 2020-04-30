@@ -13,7 +13,8 @@ const dsTypes = {
   object:             'object',
   jsonb:              'object',
   array:              'array',
-  uuid:               'string'
+  uuid:               'string',
+  enum:               'string'
   // Not used at the moment
   // text:               'string',
   // 'null':             'string',
